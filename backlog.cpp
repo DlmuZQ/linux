@@ -43,7 +43,7 @@ int main(int argc, char* argv[])
     assert(ret != -1);
 
     //listen
-    ret = listen(sock, backlog);
+    ret = listen(sockfd, backlog);
     assert(ret != -1);
 
     //wait to quit
