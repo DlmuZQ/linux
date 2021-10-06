@@ -50,7 +50,7 @@ int main(int argc, char* argv[])
     else 
     {
         char remote[INET_ADDRSTRLEN];
-        printf("ip %s, port %d \n", inet_ntop(AF_INET, &client.addr, remote, INET_ADDRSTRLEN), ntohs(client.sin_port));
+        printf("ip %s, port %d \n", inet_ntop(AF_INET, &client.sin_addr, remote, INET_ADDRSTRLEN), ntohs(client.sin_port));
         close(connfd);
     }
     //close
