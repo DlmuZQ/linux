@@ -9,24 +9,15 @@
 #include <stdio.h>
 #include <string.h>
 
-static bool stop = false;
-
-static void handle_term(int sig)
-{
-    stop = true;
-}
-
 int main(int argc, char* argv[])
 {
-    signal(SIGTERM, handle_term);
-    if (argc < 3)
+    if (argc < 2)
     {
-        printf("use 3 xxx xxx xxx");
+        printf("use 2 xxx xxx");
         return 1;
     }
     const char* ip = argv[1];
     int port = atoi(argv[2]);
-    int backlog = atoi(argv[3]);
 
     //create socket
     int sockfd = socket(PF_INET, SOCK_STREAM, 0);
@@ -40,19 +31,18 @@ int main(int argc, char* argv[])
     address.sin_port = htons(port);
 
     //rename 
-    int ret = bind(sockfd, (struct sockaddr *)&address, sizeof(address));
-    assert(ret != -1);
-
-    //listen
-    ret = listen(sockfd, backlog);
-    assert(ret != -1);
-
-    //wait to quit
-    while (!stop)
+    int ret = connect(sockfd, (struct sockaddr *)&address, sizeof(address));
+    if (ret < 0)
     {
-        printf(".....");
-        sleep(1);
+        printf("connect error \n");
+        return -1;
     }
+    const char* oob_data = "abc";
+    const char* normal_data = "123";
+    send(sockfd, normal_data, strlen(normal_data), 0);
+    send(sockfd, oob_data, strlen(oob_data), MSG_OOB);
+    send(sockfd, normal_data, strlen(normal_data), 0);
+
     //close
     close(sockfd);
     printf("quit...");
